@@ -27,6 +27,7 @@ mod icone;
 mod identidade;
 pub mod langfuse;
 mod lista;
+mod marca;
 mod mcp_types;
 mod mensagens;
 mod midia;
@@ -177,6 +178,9 @@ async fn despachar(
     let host_do_painel = estado.configuracao.host_do_painel.as_deref();
     match host {
         Some(host) if Some(host.nome.as_str()) == host_do_painel => {
+            if let Some(resposta) = marca::recurso(uri.path(), &metodo) {
+                return resposta;
+            }
             painel::atender(&estado, &host.com_porta, &metodo, &cabecalhos, &uri, &corpo).await
         }
         // Só o painel recebe arquivo grande: o site fica com o limite de antes.
